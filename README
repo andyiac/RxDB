@@ -1,11 +1,9 @@
 
+## RxDB
 
-RxDB is Rx style database for android
+RxDB is Rx style database for android, Inspired by square's Retrofit
 
-Inspired by square's retrofit
-
-设想
----
+## 设计（正在开发中）
 
 - 使用SQLite 实现
 - 采用key value 方式存储
