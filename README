@@ -1,0 +1,14 @@
+
+
+RxDB is Rx style database for android
+
+Inspired by square's retrofit
+
+设想
+---
+
+- 使用SQLite 实现
+- 采用key value 方式存储
+- 使用Retrofit 注解方式 @insert @delete @query @update
+- 如果没有key 给hash值作为key
+- 按照ID分页
