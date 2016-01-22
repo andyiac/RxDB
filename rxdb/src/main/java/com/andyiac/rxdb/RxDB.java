@@ -8,36 +8,42 @@ import android.database.sqlite.SQLiteDatabase;
 public class RxDB {
 
     private Context mContext;
-    private RxDB mInstance;
+    private static RxDB mInstance;
     private KvDB mKvDB;
 
     private String RXDB_NAME = "rxdb";
+    private int RXDB_VERSION = 1;
 
     private RxDB() {
     }
 
-    public RxDB getInstance(Context context) {
+    public static RxDB getInstance() {
 
         if (mInstance == null) {
-            this.mContext = context;
-            mInstance = new RxDB();
+            synchronized (RxDB.class) {
+                mInstance = new RxDB();
+            }
         }
 
         return mInstance;
     }
 
-    public synchronized KvDB init(String dbname) {
+    public synchronized void init(Context context, String dbName) {
+        this.mContext = context;
 
-        if (dbname != null) RXDB_NAME = dbname;
-
+        if (dbName != null) RXDB_NAME = dbName;
         if (mKvDB == null) {
             mKvDB = new KvDB(openBaseDB(RXDB_NAME));
         }
-        return mKvDB;
     }
 
-    public KvDB getKvDB() {
-        return mKvDB;
+
+    public void insert(String key, String value) {
+        mKvDB.addData(key, value);
+    }
+
+    public String query(String key) {
+        return mKvDB.queryData(key);
     }
 
 
@@ -46,7 +52,9 @@ public class RxDB {
     }
 
 
+    //================================================
     // for db update
+    //================================================
 
     /**
      * 当前apk 版本号

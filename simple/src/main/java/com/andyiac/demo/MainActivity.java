@@ -8,6 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.andyiac.rxdb.RxDB;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,10 +18,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-       FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -26,6 +30,29 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        RxDB.getInstance().init(this, "first_test.db");
+    }
+
+
+    public void onClickInsert(View view) {
+
+        RxDB.getInstance().insert("abc", "asdfasdfasdfasdf");
+
+    }
+
+    public void onClickDelete(View view) {
+
+    }
+
+    public void onClickUpdate(View view) {
+
+    }
+
+    public void onClickQuery(View view) {
+        String rs = RxDB.getInstance().query("abc");
+        Toast.makeText(this, rs, Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
