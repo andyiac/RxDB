@@ -39,11 +39,19 @@ public class RxDB {
 
 
     public void insert(String key, String value) {
-        mKvDB.addData(key, value);
+        mKvDB.updateData(key, value);
+    }
+
+    public void update(String key, String value) {
+        mKvDB.updateData(key, value);
     }
 
     public String query(String key) {
         return mKvDB.queryData(key);
+    }
+
+    public int delete(String key) {
+        return mKvDB.deleteData(key);
     }
 
 

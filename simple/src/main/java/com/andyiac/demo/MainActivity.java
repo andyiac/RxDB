@@ -36,16 +36,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onClickInsert(View view) {
-
         RxDB.getInstance().insert("abc", "asdfasdfasdfasdf");
-
     }
 
     public void onClickDelete(View view) {
+        RxDB.getInstance().delete("abc");
 
     }
 
     public void onClickUpdate(View view) {
+        RxDB.getInstance().update("abc","====================");
 
     }
 
