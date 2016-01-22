@@ -6,7 +6,7 @@ import android.provider.BaseColumns;
 
 import java.util.ArrayList;
 
-public class SQLiteTable {
+public class TableHelper {
     String mTableName;
 
     ArrayList<Column> mColumnsDefinitions = new ArrayList<Column>();
@@ -17,26 +17,26 @@ public class SQLiteTable {
 
     /**
      * 会自动添加主键 BaseColumns._ID
-     * 
+     *
      * @param tableName
      */
-    public SQLiteTable(String tableName) {
+    public TableHelper(String tableName) {
         mTableName = tableName;
         mColumnsDefinitions.add(new Column(BaseColumns._ID, Column.Constraint.PRIMARY_KEY,
                 Column.DataType.INTEGER));
     }
 
-    public SQLiteTable addColumn(Column columnsDefinition) {
+    public TableHelper addColumn(Column columnsDefinition) {
         mColumnsDefinitions.add(columnsDefinition);
         return this;
     }
 
-    public SQLiteTable addColumn(String columnName, Column.DataType dataType) {
+    public TableHelper addColumn(String columnName, Column.DataType dataType) {
         mColumnsDefinitions.add(new Column(columnName, null, dataType));
         return this;
     }
 
-    public SQLiteTable addColumn(String columnName, Column.Constraint constraint,
+    public TableHelper addColumn(String columnName, Column.Constraint constraint,
                                  Column.DataType dataType) {
         mColumnsDefinitions.add(new Column(columnName, constraint, dataType));
         return this;

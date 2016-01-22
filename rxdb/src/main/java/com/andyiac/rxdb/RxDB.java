@@ -4,23 +4,19 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Environment;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class RxDB {
 
     private Context mContext;
+    private RxDB mInstance;
+    private KvDB mKvDB;
+
+    private String RXDB_NAME = "rxdb";
 
     private RxDB() {
     }
 
-    private RxDB mInstance;
-
-    private RxDB getInstance(Context context) {
+    public RxDB getInstance(Context context) {
 
         if (mInstance == null) {
             this.mContext = context;
@@ -30,38 +26,27 @@ public class RxDB {
         return mInstance;
     }
 
-    private SQLiteDatabase openBaseDB(String dbName) {
-        String path = "/data"
-                + Environment.getDataDirectory().getAbsolutePath()
-                + File.separator + "com.smiletv.haohuo" + File.separator
-                + dbName;
-        File db = new File(path);
+    public synchronized KvDB init(String dbname) {
 
-        int apkVersionCode = getCurrentApkVersionCode();
+        if (dbname != null) RXDB_NAME = dbname;
 
-        boolean isUpdated = isApkUpdate(apkVersionCode);
-
-        if (!db.exists() || isUpdated) {
-            try {
-                InputStream is = mContext.getAssets().open("city.db");
-                FileOutputStream fos = new FileOutputStream(db);
-                int len = -1;
-                byte[] buffer = new byte[1024];
-                while ((len = is.read(buffer)) != -1) {
-                    fos.write(buffer, 0, len);
-                    fos.flush();
-                }
-                fos.close();
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.exit(0);
-            }
-
+        if (mKvDB == null) {
+            mKvDB = new KvDB(openBaseDB(RXDB_NAME));
         }
-
-        return mContext.openOrCreateDatabase(path, Context.MODE_PRIVATE, null);
+        return mKvDB;
     }
+
+    public KvDB getKvDB() {
+        return mKvDB;
+    }
+
+
+    private SQLiteDatabase openBaseDB(String dbName) {
+        return mContext.openOrCreateDatabase(dbName, Context.MODE_PRIVATE, null);
+    }
+
+
+    // for db update
 
     /**
      * 当前apk 版本号
@@ -94,7 +79,7 @@ public class RxDB {
     }
 
     public SharedPreferences getLoginInfoSP() {
-        return mContext.getSharedPreferences("login_info", mContext.MODE_PRIVATE);
+        return mContext.getSharedPreferences("rxdb_info", mContext.MODE_PRIVATE);
     }
 
 }
