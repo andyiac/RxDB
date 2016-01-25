@@ -67,7 +67,7 @@ public class RxDB {
     /**
      * 当前apk 版本号
      *
-     * @return
+     * @return apkVersionCode
      */
     private int getCurrentApkVersionCode() {
         int apkVersionCode = 0;
