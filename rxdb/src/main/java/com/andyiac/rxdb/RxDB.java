@@ -3,7 +3,11 @@ package com.andyiac.rxdb;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import rx.Observable;
+import rx.Subscriber;
 
 public class RxDB {
 
@@ -38,8 +42,8 @@ public class RxDB {
     }
 
 
-    public void insert(String key, String value) {
-        mKvDB.updateData(key, value);
+    public int insert(String key, String value) {
+        return mKvDB.updateData(key, value);
     }
 
     public void update(String key, String value) {
@@ -52,6 +56,30 @@ public class RxDB {
 
     public int delete(String key) {
         return mKvDB.deleteData(key);
+    }
+
+    //添加对RxJava的支持
+
+    // 返回数据是 实体类更好
+    public Observable<String> rxQuery(final String key) {
+        return Observable.create(new Observable.OnSubscribe<String>() {
+
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                subscriber.onNext(query(key));
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    public Observable<Integer> rxInsert(final String key, final String value) {
+        return Observable.create(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+                subscriber.onNext(insert(key, value));
+                subscriber.onCompleted();
+            }
+        });
     }
 
 

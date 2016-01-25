@@ -1,18 +1,19 @@
 package com.andyiac.demo;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.andyiac.rxdb.RxDB;
 
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+
 public class MainActivity extends AppCompatActivity {
+
+    private TextView tvContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,16 +23,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        tvContent = (TextView) findViewById(R.id.tv_content);
 
-        RxDB.getInstance().init(this, "first_test.db");
     }
 
 
@@ -41,39 +34,35 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickDelete(View view) {
         RxDB.getInstance().delete("abc");
-
     }
 
     public void onClickUpdate(View view) {
-        RxDB.getInstance().update("abc","====================");
-
+        RxDB.getInstance().update("abc", "====================");
     }
 
     public void onClickQuery(View view) {
-        String rs = RxDB.getInstance().query("abc");
-        Toast.makeText(this, rs, Toast.LENGTH_SHORT).show();
+        // 非rx方式
+        // String rs = RxDB.getInstance().query("abc");
 
+        // rx方式支持
+        RxDB.getInstance().rxQuery("abc")
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        tvContent.setText(s);
+                    }
+                });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }
